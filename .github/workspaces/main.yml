@@ -1,0 +1,11 @@
+name: main
+run-name: main-pipeline
+on: [push]
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3
+      - name: check-docker
+        run: |
+          docker -v
