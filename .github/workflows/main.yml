@@ -75,6 +75,10 @@ jobs:
         run: scp -i ~/.ssh/staging.key -o 'StrictHostKeyChecking no' ./lovely_artifact.tar.gz root@$HOST:/root/lovely_artifact.tar.gz
         env:
           HOST: ${{ secrets.HOST }}
+      - name: load docker on vps
+        run: ssh staging docker load -i /root/lovely_artifact.tar.gz
+      - name: run app
+        run: ssh staging docker run -d -p 80:8080 app:latest
         
   deploy-to-prod:
     needs: deploy-to-stage
