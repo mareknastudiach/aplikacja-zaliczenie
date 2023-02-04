@@ -15,38 +15,18 @@ jobs:
         run: npm ci
       - name: run tests
         run: npm run test
-  run-performance-tests:
-    needs: run-unit-tests
-    runs-on: ubuntu-latest
-    container:
-      image: node:16
-      env:
-        NODE_ENV: development
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: install dependencies
-        run: npm ci
-      - name: start app
-        run: npm start
-      - name: performance tests
-        run: ab -n 100 http://localhost:8080/
   build-image:
-    needs: run-performance-tests
+    needs: run-unit-tests
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v3
       - name: build image
         run: docker build -t app:latest .
-      - name: check images
-        run: docker image ls
-  deploy:
-    needs: build-image
-    runs-on: ubuntu-latest
-    steps:
-      - name: deploy
-        run: echo "deploying"
+      - name: create a lovely package
+        run: docker save app:latest | gzip > lovely_artefact.tar.gz
+      - name: XD
+        run: ls
       
 #1. run unit tests -- automatic
 #2. run performance tests -- automatic 
