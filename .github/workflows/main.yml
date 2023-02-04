@@ -69,7 +69,7 @@ jobs:
             StrictHostKeyChecking no
           END
       - name: upload artefact
-        run: scp -i ~/.ssh/staging.key ./lovely_artifact.tar.gz root@$HOST:/root/lovely_artifact.tar.gz
+        run: cat ~/.ssh/config
         env:
           HOST: ${{ secrets.HOST }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
