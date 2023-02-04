@@ -56,16 +56,23 @@ jobs:
         with:
           name: docker-image
           path: .
-      - name: create key
-        run: echo ${{ secrets.SSH_KEY }} > key
       - name: connect to stage
-        run: ssh -i key root@$HOST
+        run: |
+          echo "echo $SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $HOST
+            User root
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+          ssh -i key root@$HOST
         env:
           HOST: ${{ secrets.HOST }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
       - name: ls
-        run: ls
-      - name: exit
-        run: exit
+        run: ssh staging 'ls'
         
   deploy-to-prod:
     needs: deploy-to-stage
@@ -80,10 +87,6 @@ jobs:
           path: .
       - name: deploy to stage
         run: echo "deploying to prod"
-        
-        
-        
-        
         
         
         
