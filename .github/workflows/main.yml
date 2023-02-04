@@ -51,10 +51,33 @@ jobs:
     environment:
       name: stage
     steps:
-      - name: check
-        run: echo "jan"
-          
-      
-#1. run unit tests -- automatic
-#2. run performance tests -- automatic 
-#3. deploy -- run on dispatch
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-image
+          path: .
+      - name: deploy to stage
+        run: echo "deploying to stage"
+        
+  deploy-to-prod:
+    needs: deploy-to-stage
+    runs-on: ubuntu-latest
+    environment:
+      name: stage
+    steps:
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-image
+          path: .
+      - name: deploy to stage
+        run: echo "deploying to prod"
+        
+        
+        
+        
+        
+        
+        
+        
+        
