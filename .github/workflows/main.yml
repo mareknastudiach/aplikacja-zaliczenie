@@ -24,9 +24,24 @@ jobs:
       - name: build image
         run: docker build -t app:latest .
       - name: create a lovely package
-        run: docker save app:latest | gzip > lovely_artefact.tar.gz
-      - name: XD
+        run: docker save app:latest | gzip > lovely_artifact.tar.gz
+      - name: upload artefact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image
+          path: lovely_artefict.tar.gz
+  run-performance-tests:
+    needs: build-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: docker image
+          path: .
+      - name: check artifact
         run: ls
+          
       
 #1. run unit tests -- automatic
 #2. run performance tests -- automatic 
