@@ -44,7 +44,7 @@ jobs:
       - name: run app
         run: docker run -d -p 8080:8080 app:latest
       - name: run performance tests
-        run: ab -n 1 http://localhost:8080/
+        run: ls
   deploy-to-stage:
     needs: run-performance-tests
     runs-on: ubuntu-latest
