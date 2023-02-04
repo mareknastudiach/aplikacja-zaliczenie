@@ -68,7 +68,6 @@ jobs:
             IdentityFile ~/.ssh/staging.key
             StrictHostKeyChecking no
           END
-          ssh -i key root@$HOST
         env:
           HOST: ${{ secrets.HOST }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
