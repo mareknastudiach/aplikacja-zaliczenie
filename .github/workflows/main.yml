@@ -63,7 +63,7 @@ jobs:
     needs: deploy-to-stage
     runs-on: ubuntu-latest
     environment:
-      name: stage
+      name: prod
     steps:
       - name: download artifact
         uses: actions/download-artifact@v3
