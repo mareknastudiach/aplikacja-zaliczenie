@@ -45,6 +45,14 @@ jobs:
         run: docker run -d -p 8080:8080 app:latest
       - name: run performance tests
         run: ab -n 1 http://localhost:8080/
+  deploy-to-stage:
+    needs: run-performance-tests
+    runs-on: ubuntu-latest
+    environment:
+      name: stage
+    steps:
+      - name: check
+        run: echo "jan"
           
       
 #1. run unit tests -- automatic
