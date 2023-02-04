@@ -2,10 +2,17 @@ name: main
 run-name: main-pipeline
 on: [push]
 jobs:
-  build-docker-image:
+  run-tests:
     runs-on: ubuntu-latest
+    container:
+      image: node:16
+      env:
+        NODE_ENV: development
     steps:
-      - uses: actions/checkout@v3
-      - name: check-docker
-        run: |
-          ls
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: install dependencies
+        run: npm ci
+      - name: run tests
+        run: npm run test
+      
