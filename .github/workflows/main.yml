@@ -56,8 +56,16 @@ jobs:
         with:
           name: docker-image
           path: .
-      - name: deploy to stage
-        run: echo "deploying to stage"
+      - name: create key
+        run: echo ${{ secrets.SSH_KEY }} > key
+      - name: connect to stage
+        run: ssh -i key root@$HOST
+        env:
+          HOST: ${{ secrets.HOST }}
+      - name: ls
+        run: ls
+      - name: exit
+        run: exit
         
   deploy-to-prod:
     needs: deploy-to-stage
