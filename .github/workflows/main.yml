@@ -44,7 +44,7 @@ jobs:
       - name: run app
         run: docker run -d -p 8080:8080 app:latest
       - name: run performance tests
-        run: ls
+        run: ab -n 1 http://localhost:8080/
   deploy-to-stage:
     needs: run-performance-tests
     runs-on: ubuntu-latest
@@ -91,9 +91,29 @@ jobs:
         with:
           name: docker-image
           path: .
-      - name: deploy to stage
-        run: echo "deploying to prod"
-        
+      - name: connect to prod
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/prod.key
+          chmod 600 ~/.ssh/prod.key
+          cat >>~/.ssh/config <<END
+          Host prod
+            HostName $HOST
+            User root
+            IdentityFile ~/.ssh/prod.key
+            StrictHostKeyChecking no
+          END
+        env:
+          HOST: ${{ secrets.HOST }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+      - name: upload artefact
+        run: scp -i ~/.ssh/prod.key -o 'StrictHostKeyChecking no' ./lovely_artifact.tar.gz root@$HOST:/root/lovely_artifact.tar.gz
+        env:
+          HOST: ${{ secrets.HOST }}
+      - name: load docker on vps
+        run: ssh prod docker load -i /root/lovely_artifact.tar.gz
+      - name: run app
+        run: ssh prod docker run -d -p 80:8080 app:latest
         
         
         
